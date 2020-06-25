@@ -5,7 +5,7 @@ import java.io.File
 import scala.annotation.tailrec
 
 class Matcher(filter: String, val rootLocation: String = new File(".").getCanonicalPath,
-              checkSubFolders: Boolean = false) {
+              checkSubFolders: Boolean = false, contentFilter: Option[String] = None) {
   val rootIOObject = FileConverter.convertToIOObject(new File(rootLocation))
 
   def execute() = {
@@ -30,6 +30,13 @@ class Matcher(filter: String, val rootLocation: String = new File(".").getCanoni
         else FilterChecker(filter).findMatchedFiles(directory.children())
       case _ => List()
     }
-    matchedFiles.map(iOObject => iOObject.name)
+
+    val contentFilteredFiles = contentFilter match {
+      case Some(dataFilter) => matchedFiles filter (
+        iOObject => FilterChecker(dataFilter).findMatchedContentCount(iOObject.file) > 0)
+      case None => matchedFiles
+    }
+
+    contentFilteredFiles.map(iOObject => iOObject.name)
   }
 }

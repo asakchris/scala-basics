@@ -14,7 +14,7 @@ class MatcherTests extends AnyFlatSpec {
 
   "Matcher using a directory containing one file matching the filter" should
     "return a list with that file name" in {
-    val matcher = new Matcher("txt", new File(".\\testfiles\\").getCanonicalPath)
+    val matcher = new Matcher("readme", new File(".\\testfiles\\").getCanonicalPath)
     val results = matcher.execute()
     assert(results == List("readme.txt"))
   }
@@ -30,6 +30,20 @@ class MatcherTests extends AnyFlatSpec {
     val searchSubDirectories = true
     val matcher = new Matcher("txt", new File(".\\testfiles\\").getCanonicalPath, searchSubDirectories)
     val results = matcher.execute()
-    assert(results == List("notes.txt", "readme.txt"))
+    assert(results == List("notes.txt", "readme.txt", "data.txt"))
+  }
+
+  "Matcher given a path that has one file that matches file filter and content filter" should
+    "return a list with those file name" in {
+    val matcher = new Matcher("data", new File(".\\testfiles\\").getCanonicalPath, true, Some("Hello"))
+    val matchedFiles = matcher.execute()
+    assert(matchedFiles == List("data.txt"))
+  }
+
+  "Matcher given a path that has no file that matches file filter and content filter" should
+    "return a list with those file name" in {
+    val matcher = new Matcher("readme", new File(".\\testfiles\\").getCanonicalPath, true, Some("Hello"))
+    val matchedFiles = matcher.execute()
+    assert(matchedFiles == List())
   }
 }
