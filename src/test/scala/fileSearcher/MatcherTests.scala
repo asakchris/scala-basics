@@ -9,14 +9,14 @@ class MatcherTests extends AnyFlatSpec {
     "return a list with that file name" in {
     val matcher = new Matcher("fake", "fakePath")
     val results = matcher.execute()
-    assert(results == List("fakePath"))
+    assert(results == List(("fakePath", None)))
   }
 
   "Matcher using a directory containing one file matching the filter" should
     "return a list with that file name" in {
     val matcher = new Matcher("readme", new File(".\\testfiles\\").getCanonicalPath)
     val results = matcher.execute()
-    assert(results == List("readme.txt"))
+    assert(results == List(("readme.txt", None)))
   }
 
   "Matcher that is not passed a root file location" should
@@ -30,14 +30,14 @@ class MatcherTests extends AnyFlatSpec {
     val searchSubDirectories = true
     val matcher = new Matcher("txt", new File(".\\testfiles\\").getCanonicalPath, searchSubDirectories)
     val results = matcher.execute()
-    assert(results == List("notes.txt", "readme.txt", "data.txt"))
+    assert(results == List(("notes.txt", None), ("readme.txt", None), ("data.txt", None)))
   }
 
   "Matcher given a path that has one file that matches file filter and content filter" should
     "return a list with those file name" in {
     val matcher = new Matcher("data", new File(".\\testfiles\\").getCanonicalPath, true, Some("Hello"))
     val matchedFiles = matcher.execute()
-    assert(matchedFiles == List("data.txt"))
+    assert(matchedFiles == List(("data.txt", Some(3))))
   }
 
   "Matcher given a path that has no file that matches file filter and content filter" should
